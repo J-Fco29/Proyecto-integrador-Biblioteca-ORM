@@ -385,7 +385,8 @@ def session(engine_test):
         yield session
     finally:
         session.close()
-        transaccion.rollback()
+        if transaccion.is_active:
+            transaccion.rollback()
         conexion.close()
 
 
