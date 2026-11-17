@@ -66,9 +66,9 @@ class PrestamoServicio:
                 fecha_devolucion=None
             )
 
-            # Vinculación mediante objeto y detalle asociativo
-            prestamo.detalles.append(DetallePrestamo(ejemplar=ejemplar))
-            prestamo.ejemplares.append(ejemplar)
+            # Vinculación del ejemplar mediante la relación directa N:M
+            if ejemplar not in prestamo.ejemplares:
+                prestamo.ejemplares.append(ejemplar)
 
             # Actualización del estado físico del ejemplar
             ejemplar.estado = "PRESTADO"
@@ -115,7 +115,8 @@ class PrestamoServicio:
             resumenes: list[PrestamoResumen] = []
             for p in prestamos:
                 nombre_socio = f"{p.socio.nombre} {p.socio.apellidos}".strip() if p.socio else "Desconocido"
-                for e in p.ejemplares:
+                ejemplares_unicos = {e.id_ejemplar: e for e in p.ejemplares}.values()
+                for e in ejemplares_unicos:
                     titulo_libro = e.libro.titulo if e.libro else "Sin título"
                     resumenes.append(
                         PrestamoResumen(
