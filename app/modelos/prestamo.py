@@ -34,11 +34,13 @@ class DetallePrestamo(Base):
     )
 
     prestamo: Mapped[Prestamo] = relationship(
-        back_populates="detalles"
+        back_populates="detalles",
+        overlaps="prestamos,ejemplares"
     )
 
     ejemplar: Mapped[Ejemplar] = relationship(
-        back_populates="detalles"
+        back_populates="detalles",
+        overlaps="prestamos,ejemplares"
     )
 
     def __repr__(self) -> str:
@@ -89,13 +91,15 @@ class Prestamo(Base):
     # Relación 1 a N con los detalles del préstamo
     detalles: Mapped[list[DetallePrestamo]] = relationship(
         back_populates="prestamo",
-        cascade="all, delete-orphan"
+        cascade="all, delete-orphan",
+        overlaps="ejemplares"
     )
 
     # Relación N a M directa: Colección de ejemplares incluidos en el préstamo
     ejemplares: Mapped[list[Ejemplar]] = relationship(
         secondary="detalle_prestamo",
-        back_populates="prestamos"
+        back_populates="prestamos",
+        overlaps="detalles,ejemplar,prestamo"
     )
 
     def __repr__(self) -> str:

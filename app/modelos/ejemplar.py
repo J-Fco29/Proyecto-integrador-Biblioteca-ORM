@@ -54,13 +54,15 @@ class Ejemplar(Base):
     # Relación N a M directa a través de la tabla intermedia
     prestamos: Mapped[list[Prestamo]] = relationship(
         secondary="detalle_prestamo",
-        back_populates="ejemplares"
+        back_populates="ejemplares",
+        overlaps="detalles"
     )
 
     # Relación con la entidad asociativa
     detalles: Mapped[list[DetallePrestamo]] = relationship(
         back_populates="ejemplar",
-        cascade="all, delete-orphan"
+        cascade="all, delete-orphan",
+        overlaps="prestamos"
     )
 
     def __repr__(self) -> str:
